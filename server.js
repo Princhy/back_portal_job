@@ -1,9 +1,10 @@
 require('dotenv').config();
+
 const express = require('express');
+const bodyParser = require("body-parser");
 const sequelize = require('./config/database');
-const authRoutes = require('./routes/authRoutes');
-const jobRoutes = require('./routes/jobRoutes');
-const userRoutes = require('./routes/userRoutes');
+const api = require("./routes/api");
+const ProductRouter = require("./routes/productRouter");
 const Job = require('./models/Job');
 const User = require('./models/User');
 const Post = require('./models/Post');
@@ -13,10 +14,11 @@ const app = express();
 
 app.use(express.json());
 
+app.use(bodyParser.json());
+
 // Routes
-app.use('/api/auth', authRoutes);
-app.use('/api/job', jobRoutes); // Ajoutez le '/' manquant
-app.use('/api/user', userRoutes); // Ajoutez le '/' manquant
+app.use("/api", api);
+app.use("/products", ProductRouter)
 
 // Test de la connexion à la base de données
 sequelize.authenticate()
@@ -24,7 +26,7 @@ sequelize.authenticate()
   .catch((err) => console.error('Impossible de se connecter à la base de données :', err));
 
 // Synchronisation des modèles
-sequelize.sync({ force: true })
+sequelize.sync({ alter: true })
   .then(() => console.log('Les modèles ont été synchronisés avec succès.'))
   .catch((err) => console.error('Erreur lors de la synchronisation des modèles :', err));
 
