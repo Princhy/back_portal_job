@@ -1,5 +1,8 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/database');
+const User = require('./User');
+const Job = require('./Job');
+const Entite = require('./Entite');
 
 const Post = sequelize.define('Post', {
   id: {
@@ -23,23 +26,39 @@ const Post = sequelize.define('Post', {
     type: DataTypes.FLOAT,
     allowNull: true,
   },
-  post_by:{
+  userId: {
     type: DataTypes.INTEGER,
     allowNull: false,
+    references: {
+      model: User,
+      key: 'id'
+    }
   },
-  photo:{
-    type:DataTypes.STRING,
-    allowNull:true,
-  },
-  statuts:{
-    type: DataTypes.STRING,
+  jobId: {
+    type: DataTypes.INTEGER,
     allowNull: false,
-    validate: {
-      isIn: [["Disponible", "Non Disponible"]],
-    },
+    references: {
+      model: Job,
+      key: 'id'
+    }
   },
-}, {
-  timestamps: true,
+  entiteId: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    references: {
+      model: Entite,
+      key: 'id'
+    }
+  },
+  status: {
+    type: DataTypes.ENUM('pending', 'accepted', 'rejected'),
+    defaultValue: 'pending'
+  }
 });
+
+// Associations
+Post.belongsTo(User, { foreignKey: 'userId' });
+Post.belongsTo(Job, { foreignKey: 'jobId' });
+Post.belongsTo(Entite, { foreignKey: 'entiteId' });
 
 module.exports = Post;
