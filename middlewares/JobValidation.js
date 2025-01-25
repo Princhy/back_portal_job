@@ -21,13 +21,14 @@ const storeValidation = (req, res, next) => {
 
 const updateValidation = (req, res, next) => {
   const schema = Joi.object({
-    description: Joi.string().optional(),
     titre: Joi.string().optional(),
+    description: Joi.string().optional(),
     location: Joi.string().optional(),
     salary: Joi.string().optional(),
-    statuts: Joi.string().valid("Disponible", "Non disponible").optional(),
+    type: Joi.string().valid('emploi', 'stage').optional(),
+    statuts: Joi.string().valid('Disponible', 'Non Disponible').optional(),
+    photo: Joi.string().optional()
   });
-
   const { error } = schema.validate(req.body);
   if (error) {
     return res.status(400).json({ message: "Bad request", error });
