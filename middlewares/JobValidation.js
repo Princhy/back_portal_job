@@ -3,12 +3,13 @@ const Joi = require("joi");
 const storeValidation = (req, res, next) => {
   const schema = Joi.object({
     titre: Joi.string().required(),
-    description: Joi.string().optional(),
+    description: Joi.string().required(),
     location: Joi.string().required(),
     salary: Joi.string().required(),
-    photo: Joi.date().optional(),
     publied_by: Joi.string().required(),
-    statuts:Joi.string().required(),
+    type: Joi.string().valid('emploi', 'stage').required(),
+    statuts: Joi.string().valid('Disponible', 'Non Disponible').required(),
+    photo: Joi.string().optional()
   });
 
   const { error } = schema.validate(req.body);

@@ -7,5 +7,5 @@ router.get('/', entiteController.getAll);
 router.get('/:id', entiteController.getById);
 router.put('/:id', entiteController.update);
 router.delete('/:id', entiteController.delete);
-
+router.post('/login', entiteController.login);
 module.exports = router;

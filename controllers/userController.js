@@ -1,5 +1,5 @@
 const User = require('../models/User');
-
+const Entite = require('../models/Entite');
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 
@@ -54,60 +54,85 @@ const signup = async (req, res) => {
   }
 };
 
+
 const login = async (req, res) => {
   try {
     const { email, password } = req.body;
-    const user = await User.findOne({ email });
+    
+    // Chercher dans les deux modèles
+    const user = await User.findOne({ where: { email } });
+    const entite = await Entite.findOne({ where: { email } });
 
-    if (!user) {
+    if (!user && !entite) {
       return res.status(403).json({
-        message: "L'adresse email est incorrecte ou non enregistrée.",
-        success: false,
-        field: "email", // Ajout pour indiquer le champ concerné
+        message: "Email non trouvé",
+        success: false
       });
     }
 
-    const isPassEqual = await bcrypt.compare(password, user.password);
+    // Vérifier si c'est un utilisateur
+    if (user) {
+      const isValidPassword = await bcrypt.compare(password, user.password);
+      if (!isValidPassword) {
+        return res.status(403).json({
+          message: "Mot de passe incorrect",
+          success: false
+        });
+      }
 
-    if (!isPassEqual) {
-      return res.status(403).json({
-        message: "Le mot de passe est incorrect.",
-        success: false,
-        field: "password", // Ajout pour indiquer le champ concerné
+      const token = jwt.sign(
+        { id: user.id, role: user.role, type: 'user' },
+        process.env.JWT_SECRET,
+        { expiresIn: '1h' }
+      );
+
+      return res.json({
+        success: true,
+        user: {
+          id: user.id,
+          email: user.email,
+          role: user.role,
+          type: 'user'
+        },
+        token
       });
     }
 
-    console.log(process.env.JWT_SECRET)
+    // Vérifier si c'est une entité
+    if (entite) {
+      const isValidPassword = await bcrypt.compare(password, entite.password);
+      if (!isValidPassword) {
+        return res.status(403).json({
+          message: "Mot de passe incorrect",
+          success: false
+        });
+      }
 
-    const jwtToken = jwt.sign(
-      {
-        email: user.email,
-        id: user.id,
-      },
-      process.env.JWT_SECRET,
-      { expiresIn: "6h" }
-    );
+      const token = jwt.sign(
+        { id: entite.id, type: 'entite' },
+        process.env.JWT_SECRET,
+        { expiresIn: '1h' }
+      );
 
-    res.status(200).json({
-      message: "Connexion réussie",
-      success: true,
-      jwtToken,
-      email,
-      nom: user.nom,
-      prenom: user.prenom,
-      role: user.role,
-      photo: user.photo,
-      contact:user.contact,
-      id: user.id,
-     
+      return res.json({
+        success: true,
+        user: {
+          id: entite.id,
+          email: entite.email,
+          nom_entreprise: entite.nom_entreprise,
+          type: 'entite'
+        },
+        token
+      });
+    }
+  } catch (error) {
+    res.status(500).json({
+      message: "Erreur serveur",
+      success: false
     });
-  } catch (err) {
-    console.error("Erreur lors de la connexion :", err);
-    res
-      .status(500)
-      .json({ message: "Erreur interne du serveur", success: false });
   }
-};
+}
+
 
 module.exports = {
   login,

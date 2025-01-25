@@ -31,6 +31,14 @@ const Job = sequelize.define('Job', {
     type:DataTypes.STRING,
     allowNull:true,
   },
+  type: {
+    type: DataTypes.ENUM('emploi', 'stage'),
+    allowNull: false,
+    defaultValue: 'emploi',
+    validate: {
+      isIn: [['emploi', 'stage']]
+    }
+  },
   statuts:{
     type: DataTypes.STRING,
     allowNull: false,

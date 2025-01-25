@@ -29,7 +29,8 @@ const store = async (req, res) => {
       statuts: "Disponible",
       location,
       salary,
-      publied_by
+      publied_by,
+      type: "emploi",
      
     });
 
