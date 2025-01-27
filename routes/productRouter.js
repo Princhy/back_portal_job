@@ -1,4 +1,3 @@
-const ensureAuthentificated = require("../middlewares/Auth");
 const router = require("express").Router();
 
 const {

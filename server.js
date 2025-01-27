@@ -6,6 +6,7 @@ const sequelize = require('./config/database');
 const api = require("./routes/api");
 const ProductRouter = require("./routes/productRouter");
 const entiteRoutes = require('./routes/entiteRoutes');
+const postRouter = require("./routes/postRouter");
 const Job = require('./models/Job');
 const User = require('./models/User');
 const Post = require('./models/Post');
@@ -24,6 +25,7 @@ app.use(bodyParser.json());
 app.use("/api", api);
 app.use("/products", ProductRouter);
 app.use("/api/entite", entiteRoutes);
+app.use("/api/post", postRouter); // Ajouter cette ligne
 
 // Test de la connexion à la base de données
 sequelize.authenticate()

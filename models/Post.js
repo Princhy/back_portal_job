@@ -10,21 +10,9 @@ const Post = sequelize.define('Post', {
     primaryKey: true,
     autoIncrement: true,
   },
-  titre: {
+  cv: {
     type: DataTypes.STRING,
     allowNull: false,
-  },
-  description: {
-    type: DataTypes.TEXT,
-    allowNull: false,
-  },
-  location: {
-    type: DataTypes.STRING,
-    allowNull: false,
-  },
-  salary: {
-    type: DataTypes.FLOAT,
-    allowNull: true,
   },
   userId: {
     type: DataTypes.INTEGER,
