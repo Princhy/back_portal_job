@@ -1,29 +1,33 @@
-require('dotenv').config();
-
 const express = require('express');
 const bodyParser = require("body-parser");
 const sequelize = require('./config/database');
 const api = require("./routes/api");
 const ProductRouter = require("./routes/productRouter");
 const entiteRoutes = require('./routes/entiteRoutes');
+
+// Importer la nouvelle route pour les candidatures
+const postRoutes = require('./routes/postroutes');  // Ajouter cette ligne
+
 const Job = require('./models/Job');
 const User = require('./models/User');
 const Post = require('./models/Post');
 const Entite = require('./models/Entite');
+
 const cors = require('cors');
 
 const app = express();
 
 app.use(express.json());
-
 app.use(cors());
-
 app.use(bodyParser.json());
 
 // Routes
 app.use("/api", api);
 app.use("/products", ProductRouter);
 app.use("/api/entite", entiteRoutes);
+
+// Ajouter la route pour les candidatures
+app.use("/api/posts", postRoutes);  // Utiliser la route pour les candidatures
 
 // Test de la connexion à la base de données
 sequelize.authenticate()

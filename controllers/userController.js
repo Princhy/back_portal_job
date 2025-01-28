@@ -4,6 +4,41 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 
 
+const getUserById = async (req, res) => {
+  try {
+    const { id } = req.params;  // Récupérer l'ID de l'utilisateur depuis les paramètres de l'URL
+
+    // Chercher l'utilisateur par ID
+    const user = await User.findByPk(id);  // Utiliser `findByPk` pour chercher par clé primaire (ID)
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'Utilisateur non trouvé',
+      });
+    }
+
+    // Si l'utilisateur est trouvé, renvoyer les informations
+    return res.status(200).json({
+      success: true,
+      user: {
+        id: user.id,
+        nom: user.nom,
+        prenom: user.prenom,
+        email: user.email,
+        role: user.role,
+        contact: user.contact,
+      },
+    });
+  } catch (error) {
+    console.error('Erreur lors de la récupération de l\'utilisateur:', error);
+    return res.status(500).json({
+      success: false,
+      message: 'Erreur serveur',
+      error: error.message,
+    });
+  }
+};
 const signup = async (req, res) => {
   try {
     const {
@@ -136,5 +171,5 @@ const login = async (req, res) => {
 
 module.exports = {
   login,
-  signup,
+  signup,getUserById,
 };

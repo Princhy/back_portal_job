@@ -10,6 +10,7 @@ const store = async (req, res) => {
       photo,
       publied_by,
       statuts,
+      type
      
     } = req.body;
 
@@ -26,11 +27,11 @@ const store = async (req, res) => {
       titre,
       description,
       //photo: photoPath,
-      statuts: "Disponible",
+      statuts,
       location,
       salary,
       publied_by,
-      type: "emploi",
+      type,
      
     });
 
@@ -96,7 +97,8 @@ const getJob = async (req, res) => {
     }
 
     // Retourner les tickets
-    return res.status(200).json({ jobs });
+    const num = jobs.length
+    return res.status(200).json({ jobs, num });
   } catch (error) {
     console.error("Erreur lors de la récupération des jobs :", error);
     return res

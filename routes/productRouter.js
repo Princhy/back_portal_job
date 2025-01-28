@@ -7,11 +7,13 @@ const {
     getJob,
     getJobById,
     deleteJob,
+    getnum,
   } = require("../controllers/jobController");
   const {
     storeValidation,  
     updateValidation, 
   } = require("../middlewares/JobValidation");
+const { get } = require("./api");
 
   router.post(
     "/storejob",
